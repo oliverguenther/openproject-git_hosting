@@ -83,7 +83,7 @@ class SmartHttpController < ApplicationController
     logger.info { "project name    : #{@project.identifier}" }
     logger.info { "public project  : #{@allow_anonymous_read}" }
     logger.info { "repository name : #{@repository.gitolite_repository_name}" }
-    logger.info { "repository path : #{@repository.gitolite_repository_path}" }
+    logger.info { "repository path : #{@repository.git_path}" }
   end
 
 
@@ -331,7 +331,7 @@ class SmartHttpController < ApplicationController
 
   ## Note: command must be started with a quote!
   def run_git_prefix
-    return "#{OpenProject::Revisions::Git::GitoliteWrapper.shell_cmd_runner} 'cd #{@repository.gitolite_repository_path}"
+    return "#{OpenProject::Revisions::Git::GitoliteWrapper.shell_cmd_runner} 'cd #{@repository.git_path}"
   end
 
 

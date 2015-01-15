@@ -12,8 +12,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     end
 
     def run
-      logger.info("Running delayed job '#{@action}'")
-
       # Created here to avoid serialization of these heavy objects
       # before delayed_job.
       @admin = OpenProject::Revisions::Git::GitoliteWrapper.admin
@@ -21,7 +19,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
 
       send(@action)
     end
-    handle_asynchronously :run
 
     def logger
       Rails.logger

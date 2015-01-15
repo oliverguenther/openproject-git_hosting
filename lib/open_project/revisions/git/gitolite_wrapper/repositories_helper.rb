@@ -4,7 +4,7 @@ module OpenProject::Revisions::Git::GitoliteWrapper
 
     def handle_repository_add(repository, opts = {})
       repo_name = repository.gitolite_repository_name
-      repo_path = repository.gitolite_repository_path
+      repo_path = repository.git_path
       project   = repository.project
 
       if @gitolite_config.repos[repo_name]
@@ -27,7 +27,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     def set_repo_config_keys(repo_conf, repository)
       # Set post-receive hook params
       repo_conf.set_git_config("openproject.githosting.projectid", repository.project.identifier.to_s)
-      repo_conf.set_git_config("openproject.githosting.repositorykey", repository.extra[:key])
       repo_conf.set_git_config("http.uploadpack", (User.anonymous.allowed_to?(:view_changesets, repository.project) ||
         repository.extra[:git_http]))
 
@@ -68,21 +67,17 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     # the repository's url will still reflect its old location.
     def handle_repositories_move(repos)
 
-      # We'll ned the repository root directory.
-      gitolite_repos_root = Pathname.new(Setting.plugin_openproject_revisions_git[:gitolite_global_storage_dir])
-
+      # We'll need the repository root directory.
+      gitolite_repos_root = OpenProject::Revisions::Git::GitoliteWrapper.gitolite_global_storage_path
       repos.each do |repo|
-
-        # Old repository location: <:gitolite_global_storage_dir>/<path>
-        old_repository_path = Pathname.new(repo.url)
 
         # Old name is the <path> section of above, thus extract it from url.
         # But remove the '.git' part.
-        old_repository_name = old_repository_path.relative_path_from(gitolite_repos_root)
-          .basename('.git').to_s
+        old_repository_name = File.basename(repo.url, '.git')
+        old_repository_path = File.join(gitolite_repos_root, repo.url)
 
         # Actually move the repository
-        do_move_repository(repo, old_repository_path.to_s, old_repository_name)
+        do_move_repository(repo, old_repository_path, old_repository_name)
 
         gitolite_admin_repo_commit("#{@action} : #{repo.project.identifier}")
       end
@@ -99,7 +94,7 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     def do_move_repository(repo, old_path, old_name)
 
       new_name  = repo.gitolite_repository_name
-      new_path  = repo.gitolite_repository_path
+      new_path  = repo.absolute_repository_path
 
       logger.info("#{@action} : Moving '#{old_name}' -> '#{new_name}'")
       logger.debug("-- On filesystem, this means '#{old_path}' -> '#{new_path}'")
@@ -122,25 +117,21 @@ module OpenProject::Revisions::Git::GitoliteWrapper
         return
       end
 
-      # Now we have multiple options, due to the way gitolite sets up repositories
-      new_path_exists = OpenProject::Revisions::Git::GitoliteWrapper.file_exists?(new_path)
-      old_path_exists = OpenProject::Revisions::Git::GitoliteWrapper.file_exists?(old_path)
-
       # If the new path exists, some old project wasn't correctly cleaned.
-      if new_path_exists
+      if File.directory?(new_path)
         logger.warn("#{@action} : New location '#{new_path}' was non-empty. Cleaning first.")
         clean_repo_dir(new_path)
       end
 
       # Old repository has never been created by gitolite
       # => No need to move anything on the disk
-      if !old_path_exists
+      if !File.directory?(old_path)
         logger.info("#{@action} : Old location '#{old_path}' was never created. Skipping disk movement.")
         return
       end
 
       # Otherwise, move the old repo
-      OpenProject::Revisions::Git::GitoliteWrapper.sudo_move(old_path, new_path)
+      FileUtils.mv(old_path, new_path, force: true)
 
       # Clean up the old path
       clean_repo_dir(old_path)
@@ -152,25 +143,22 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     # This moves up from the lowermost point, and deletes all empty directories.
     def clean_repo_dir(path)
       parent = Pathname.new(path).parent
-      repo_root = Pathname.new(Setting.plugin_openproject_revisions_git[:gitolite_global_storage_dir])
+      repo_root = Pathname.new(OpenProject::Revisions::Git::GitoliteWrapper.gitolite_global_storage_path)
 
       # Delete the repository project itself.
-      OpenProject::Revisions::Git::GitoliteWrapper::sudo_rmdir(path, true)
+      FileUtils.rm_rf(path)
 
       loop do
 
-        parent_repo = parent.to_s
-
         # Stop deletion upon finding a non-empty parent repository
-        break unless OpenProject::Revisions::Git::GitoliteWrapper::sudo_directory_empty?(parent_repo)
+        break unless parent.children(false).empty?
 
         # Stop if we're in the project root
-        break if parent_repo == repo_root
+        break if parent == repo_root
 
-        logger.info("#{@action} : Cleaning repository directory #{parent_repo.to_s} ... ")
-        OpenProject::Revisions::Git::GitoliteWrapper::sudo_rmdir(parent_repo)
+        logger.info("#{@action} : Cleaning repository directory #{parent} ... ")
+        FileUtils.rmdir(parent)
         parent = parent.parent
-
       end
     end
 

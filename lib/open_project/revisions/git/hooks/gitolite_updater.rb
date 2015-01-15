@@ -17,7 +17,7 @@ module OpenProject::Revisions::Git::Hooks
     def project_updated(context)
       project = context[:project]
 
-      if project.repository.url != project.repository.gitolite_repository_path ||
+      if project.repository.url != project.repository.git_path ||
          project.repository.url != project.repository.root_url
 
         OpenProject::Revisions::Git::GitoliteWrapper.logger.info("Move repositories of project : '#{project}'")
@@ -59,10 +59,10 @@ module OpenProject::Revisions::Git::Hooks
       OpenProject::Revisions::Git::GitoliteWrapper.logger.info("User '#{User.current.login}' has removed \
         repository '#{repository.gitolite_repository_name}'")
 
-      repository_data = {}
-      repository_data['repo_name'] = repository.gitolite_repository_name
-      repository_data['repo_path'] = repository.gitolite_repository_path
-
+      repository_data = {
+        name: repository.gitolite_repository_name,
+        path: repository.git_path
+      }
       OpenProject::Revisions::Git::GitoliteWrapper.update(:delete_repositories, [repository_data])
     end
 
@@ -77,7 +77,7 @@ module OpenProject::Revisions::Git::Hooks
 
       projects.map do |project|
         { name: project.repository.gitolite_repository_name,
-          path: project.repository.gitolite_repository_path }
+          path: project.repository.git_path }
       end
     end
   end

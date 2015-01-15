@@ -196,10 +196,9 @@ en:
   label_tab_storage: Storage
   label_gitolite_storage_config: Gitolite Storage Configuration
 
-  label_gitolite_global_storage_dir: Gitolite repositories base path
-  label_gitolite_global_storage_dir_desc: (Relative to Gitolite user home)
-  label_gitolite_recycle_bin_dir: Gitolite recycle bin base path
-  label_gitolite_recycle_bin_dir_desc: (Relative to Gitolite user home)
+  gitolite_global_storage_path: Gitolite repositories base
+  label_gitolite_global_storage_path: Gitolite repositories base path
+  label_gitolite_global_storage_path_desc: "(e.g., /home/git/repositories)"
 
   # Gitolite Config File
   label_gitolite_include_config_file: Separate Gitolite config
@@ -213,6 +212,9 @@ en:
   label_git_config_username_desc: (Will be used as author name in commits)
   label_git_config_email: Git author email
   label_git_config_email_desc: (Will be used as author email in commits)
+  label_use_delayed_jobs: Asynchronous Gitolite access
+  label_use_delayed_jobs_desc: Use 'delayed_job' asynchronous job queue
+
 
   # Gitolite Global Config
   label_tab_global: Global
@@ -301,8 +303,6 @@ en:
   # Config Check
   label_tab_config_test: Config Test
   label_permissions_header: Required Permissions
-  label_sudo_redmine_to_gitolite_user: Redmine user is able to sudo to Git user?
-  label_sudo_gitolite_to_redmine_user: Git user is able to sudo to Redmine user?
   label_unknown_gitolite_version: Unknown version
   label_scripts_dir_writeable: Scripts directory writeable?
   label_temp_dir_writeable: Temp directory writeable?
@@ -314,8 +314,9 @@ en:
   label_gitolite_banner: Gitolite banner
   label_path_directories: PATH directories
   label_openproject_user: OpenProject username
-  label_sudo_version: Sudo version
   label_git_version: Git version
+  label_found_repositories: Repositories found
+  label_none_repositories: None
 
   # Recycle Bin
   label_tab_gitolite_recycle_bin: Recycle Bin

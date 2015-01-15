@@ -23,7 +23,10 @@ module OpenProject::Revisions::Git
         :gitolite_ssh_public_key        => File.join(Dir.home, '.ssh', 'id_rsa.pub').to_s,
 
         # Gitolite Storage Config
+        # deprecated
         :gitolite_global_storage_dir    => 'repositories',
+        # Full path
+        :gitolite_global_storage_path    => '/home/git/repositories',
 
         # Gitolite Config File
         :gitolite_admin_dir                    => File.join(Dir.home, 'gitolite-admin'),
@@ -44,6 +47,9 @@ module OpenProject::Revisions::Git
 
         # Redmine Config
         :init_repositories_on_create      => false,
+
+        # Delayed jobs
+        :use_delayed_jobs => false,
 
        }
       }
@@ -80,7 +86,7 @@ module OpenProject::Revisions::Git
       [
         :repository, :user, :setting, :settings_controller,
         :users_controller, :my_controller, :repositories_helper, :users_helper,
-        :git_adapter, :repository_git
+        :repository_git
       ].each do |sym|
         require_dependency "open_project/revisions/git/patches/#{sym}_patch"
       end

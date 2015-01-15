@@ -3,7 +3,7 @@
   gitolite_user                = Setting.plugin_openproject_revisions_git[:gitolite_user]
   ssh_server_domain            = Setting.plugin_openproject_revisions_git[:ssh_server_domain]
 
-  gitolite_global_storage_dir  = Setting.plugin_openproject_revisions_git[:gitolite_global_storage_dir]
+  gitolite_global_storage_path  = Setting.plugin_openproject_revisions_git[:gitolite_global_storage_path]
   https_server_domain = Setting.plugin_openproject_revisions_git[:https_server_domain]
 %>
 
@@ -21,8 +21,8 @@
     <label><%= l(:label_example_repository) %></label>
     <br/>
 
-    <label><%= l(:label_storage_directory) %> :</label>
-    <%= raw File.join '$HOME', gitolite_global_storage_dir, 'project1/project2/project3/', 'example.git' %>
+    <label><%= l(:gitolite_global_storage_path) %> :</label>
+    <%= raw File.join '$HOME', gitolite_global_storage_path, 'project1/project2/project3/', 'example.git' %>
 
     <br/>
 

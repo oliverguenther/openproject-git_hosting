@@ -2,20 +2,20 @@
 
 <p>
   <label><%= l(:label_gitolite_user) %></label>
-  <%= text_field_tag("settings[gitolite_user]", 
-    Setting.plugin_openproject_revisions_git[:gitolite_user], :size => 60) 
+  <%= text_field_tag("settings[gitolite_user]",
+    Setting.plugin_openproject_revisions_git[:gitolite_user], :size => 60)
   %>
 </p>
 
 <p>
   <label><%= l(:label_gitolite_ssh_private_key) %></label>
-  <%= text_field_tag("settings[gitolite_ssh_private_key]", 
+  <%= text_field_tag("settings[gitolite_ssh_private_key]",
     Setting.plugin_openproject_revisions_git[:gitolite_ssh_private_key], :size => 110) %>
 </p>
 
 <p>
   <label><%= l(:label_gitolite_ssh_public_key) %></label>
-  <%= text_field_tag("settings[gitolite_ssh_public_key]", 
+  <%= text_field_tag("settings[gitolite_ssh_public_key]",
     Setting.plugin_openproject_revisions_git[:gitolite_ssh_public_key], :size => 110) %>
 </p>
 
@@ -28,7 +28,7 @@
   Gitolite must be accessible through:
   <br />
   <strong>ssh -T
-    <%= Setting.plugin_openproject_revisions_git[:gitolite_user] %>@localhost -p 
+    <%= Setting.plugin_openproject_revisions_git[:gitolite_user] %>@localhost -p
     <%= Setting.plugin_openproject_revisions_git[:gitolite_server_port] %>
   </strong>
 </p>
@@ -44,18 +44,27 @@
 </p>
 
 <p>
-  <label><%= l(:label_gitolite_global_storage_dir) %></label>
-  <%= text_field_tag("settings[gitolite_global_storage_dir]", 
-    Setting.plugin_openproject_revisions_git[:gitolite_global_storage_dir], :size => 60) %>
+  <label><%= l(:label_gitolite_global_storage_path) %></label>
+  <%= text_field_tag("settings[gitolite_global_storage_path]",
+    Setting.plugin_openproject_revisions_git[:gitolite_global_storage_path], :size => 60) %>
   <br />
-  <em><%= l(:label_gitolite_global_storage_dir_desc) %></em>
+  <em><%= l(:label_gitolite_global_storage_path_desc) %></em>
+</p>
+
+<p>
+  <%= use_delayed_jobs = Setting.plugin_openproject_revisions_git[:use_delayed_jobs] %>
+  <label><%= l(:label_use_delayed_jobs) %></label>
+    <%= check_box_tag "settings[use_delayed_jobs]", "true", use_delayed_jobs  %>
+  </span>
+  <br />
+  <em><%= l(:label_use_delayed_jobs_desc) %></em>
 </p>
 
 <h3><%= l(:label_gitolite_git_config) %></h3>
 
 <p>
   <label><%= l(:label_git_config_username) %></label>
-  <%= text_field_tag("settings[git_config_username]", 
+  <%= text_field_tag("settings[git_config_username]",
     Setting.plugin_openproject_revisions_git[:git_config_username], :size => 60) %>
   <br />
   <em><%= l(:label_git_config_username_desc) %></em>

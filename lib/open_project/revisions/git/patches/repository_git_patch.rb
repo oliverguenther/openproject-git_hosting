@@ -51,8 +51,8 @@ module OpenProject::Revisions::Git
         # (relative from +gitolite_users+ $HOME)
         #
         # e.g., Project Foo, Subproject Bar => 'repositories/foo/bar.git'
-        def gitolite_repository_path
-          File.join(Setting.plugin_openproject_revisions_git[:gitolite_global_storage_dir],
+        def absolute_repository_path
+          File.join(OpenProject::Revisions::Git::GitoliteWrapper.gitolite_global_storage_path,
             git_path)
         end
 
@@ -71,10 +71,6 @@ module OpenProject::Revisions::Git
           User.current.anonymous? ? "" : "#{User.current.login}@"
         end
 
-
-        def http_access_path
-          "#{Setting.plugin_openproject_revisions_git[:http_server_subdir]}#{git_path}"
-        end
 
 
         def ssh_url
@@ -148,14 +144,14 @@ module OpenProject::Revisions::Git
             p = p.parent
           end
 
-          return parent_parts.join("/")
+          return File.join(*parent_parts)
         end
 
         private
 
         # Set up git urls for new repositories
         def set_git_urls
-          self.url = self.gitolite_repository_path if self.url.blank?
+          self.url = self.git_path if self.url.blank?
           self.root_url = self.url if self.root_url.blank?
         end
       end

@@ -1,37 +1,42 @@
+<%= stylesheet_link_tag 'revisions_git/revisions_git' %>
 <h3><%= l(:label_permissions_header) %></h3>
+<% gitolite_repos = OpenProject::Revisions::Git::GitoliteWrapper.git_repositories %>
 
 <table class="table table-hover">
 
   <tr>
     <td><%= l(:label_openproject_user) %></td>
-    <td><span class="label label-success"><%= OpenProject::Revisions::Git::GitoliteWrapper.openproject_user %></span></td>
+    <td><span class="label-sucess"><%= OpenProject::Revisions::Git::GitoliteWrapper.openproject_user %></span></td>
   </tr>
 
   <tr>
     <td><%= l(:label_gitolite_user) %></td>
-    <td><span class="label label-success"><%= OpenProject::Revisions::Git::GitoliteWrapper.gitolite_user %></span></td>
-  </tr>
-
-  <tr>
-    <td><%= l(:label_sudo_redmine_to_gitolite_user) %></td>
-    <td><%= icon_wrapper (OpenProject::Revisions::Git::GitoliteWrapper.can_sudo_to_gitolite_user? ? 'icon-yes' : 'icon-warning'), l(:label_sudo_redmine_to_gitolite_user) %></td>
+    <td><span class="label-sucess"><%= OpenProject::Revisions::Git::GitoliteWrapper.gitolite_user %></span></td>
   </tr>
 
   <tr>
     <td><%= l(:label_git_version) %></td>
-    <td><span class="label label-success"><%= Repository::Git.scm_version_string %></span></td>
+    <td><span class="label-sucess"><%= Repository::Git.scm_version_string %></span></td>
   </tr>
 
   <tr>
     <td><%= l(:label_gitolite_version) %></td>
     <td>
       <% gitolite_version = OpenProject::Revisions::Git::GitoliteWrapper.gitolite_version %>
-      <span class="label label-<%= gitolite_version.nil? ? 'important' : 'success' %>">
+      <span class="label label-<%= gitolite_version.nil? ? 'error' : 'success' %>">
         <%= gitolite_version.nil? ? l(:label_unknown_gitolite_version) : gitolite_version %>
       </span>
     </td>
   </tr>
 
+  <tr>
+    <td><%= l(:label_found_repositories) %></td>
+    <td>
+      <span class="label label-<%= (gitolite_repos.nil? || gitolite_repos.empty?) ? 'error' : 'success' %>">
+        <%= gitolite_repos.nil? ? l(:label_none_repositories) : gitolite_repos.length %>
+      </span>
+    </td>
+  </tr>
 </table>
 
 <p><%= label_tag  "", l(:label_gitolite_banner) %></p>
@@ -40,6 +45,15 @@
 <pre>
 <%= raw OpenProject::Revisions::Git::GitoliteWrapper.gitolite_banner %>
 </pre>
+</div>
+
+<div class="box">
+<pre>
+<% gitolite_repos.first(20).each do |repo| %>
+<%= repo %>
+<% end %>
+</pre>
+<strong><%= gitolite_repos.length > 20 ? '(showing only first 20 entries)' : "Total: #{gitolite_repos.length}" %></strong>
 </div>
 
 <p><%= label_tag  "", l(:label_path_directories) %></p>

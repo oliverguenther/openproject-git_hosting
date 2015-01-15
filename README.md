@@ -73,16 +73,18 @@ The ``openproject.conf`` is created and updated from this plugin and contains al
 * ``gitolite.conf``: If you want to manually add projects outside the scope of OpenProject to gitolite, define them here.
 * ``openproject.conf``: Contains all projects defined from OpenProject, is generated automatically. (*Non-existant until this plugin creates it*)
 
-**0.b. Allow OpenProject's git config keys**
+**0.b. Change Gitolite.rc configuration**
+
+We need to adjust a few things in the ``<git home>/.gitolite.rc``configuration file.
 
 OpenProject identifies project identifiers in gitolite through git config keys, thus you need to alter the .gitolite.rc (In the git user's $HOME) to allow that:
 
   a. As the git user, open $HOME/.gitolite.rc
   
-  b. Search for the line ``GIT_CONFIG_KEYS``
-  
-  c. Change the line to look like ``GIT_CONFIG_KEYS                 =>  '.*',``
-  
+  b. Change the configuration ``$GIT_CONFIG_KEYS`` to ``'.*',``
+
+  c. Change the configuration for ``$REPO_UMASK`` to ``0770`` to set group rxw permissions
+
   d. Save the changes
 
 
@@ -93,14 +95,28 @@ Add a Gemfile.plugins to your OpenProject root with the following contents:
 	gem "openproject-revisions", :git => "https://github.com/oliverguenther/openproject-revisions.git", :branch => "dev"
 	gem "openproject-revisions_git", :git => "https://github.com/oliverguenther/openproject-revisions_git.git", :branch => "dev"
 
-#### 2. Sudo rights
+#### 2. Gitolite access rights
 
-Ensure the user running OpenProject can sudo to the gitolite user.
+Ensure the user running OpenProject can read and write to the gitolite repostories directory.
+This is required for two reasons:
 
-Assuming that user is called *openproject* and the gitolite user is *git*, open visudo and add:
+ 1. Read the git tree for browsing the repository
+ 2. Remove deleted repositories (Gitolite doesn't remove them)
 
-	openproject        ALL=(git)      NOPASSWD:ALL
-	
+
+We have already changed the configuration file ``gitolite.rc`` to set future permissions on repositories to 0770.
+To set the permissions of the existing repositories folder.
+
+  chmod -R 770 <git home>/repositories
+
+Next, add OpenProject to the ``git`` group (assuming your gitolite user is ``git`` and your OpenProject user is ``openproject``) to allow OpenProject to access the repositories.
+
+  addgroup openproject git
+
+Make sure you can access the repositories from openproject:
+
+  su - openproject -c 'ls <git home>/repositories'
+
 #### 3. Gitolite access
 
 Make sure you can ssh into gitolite from the openproject user. If you run the following command, the output below (or similar for gitolite2) should appear. **If it does not, this is a gitolite configuration error.**
@@ -110,21 +126,23 @@ Make sure you can ssh into gitolite from the openproject user. If you run the fo
 	    R W  gitolite-admin
 	    R W  testing
 
-#### 4. Starting delayed_jobs
 
-This plugin depends on delayed_jobs to run interactions with ``gitolite-admin.git`` asynchronously. Start the worker using this command (change ``RAILS_ENV``, if necessary) :
+#### 4. Configuration in OpenProject
+
+Run OpenProject, go to **Admin > Plugins > OpenProject Revisions/Git** (click on configure)
+
+Alter you configuration for Gitolite (Gitolite path, gitolite-admin.git path, etc.) accordingly and click save.
+
+#### 5. Using delayed_job
+
+This plugin optionally allows to use delayed_jobs to run interactions with ``gitolite-admin.git`` asynchronously.
+If you activate that feature in the setting (c.f., 'Use delayed_job'): Start the worker using this command (change ``RAILS_ENV``, if necessary) :
 
 ```
 RAILS_ENV=production script/delayed_job start
 ```
 
 [See the documentation of delayed_job for further options](https://github.com/collectiveidea/delayed_job#running-jobs).
-	    
-#### 5. Configuration in OpenProject
-
-Run OpenProject, go to **Admin > Plugins > OpenProject Revisions/Git** (click on configure)
-
-Alter you configuration for Gitolite (Gitolite path, gitolite-admin.git path, etc.) accordingly and click save.
 
 #### 6. Config Test
 

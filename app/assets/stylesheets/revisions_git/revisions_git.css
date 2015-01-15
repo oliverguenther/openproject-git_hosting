@@ -1,80 +1,25 @@
-/*
-PLUGIN SETTINGS
-*/
-.revisions_git_access_box {
-  border: 2px solid;
-  background-color: #dfffdf;
-  border-color: #9fcf9f;
-  color: #005f00;
-  margin: -6px;
-  padding: 4px;
-}
-
-.revisions_git_access_box p {
-  padding-left:100px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-.revisions_git_access_box label {
-  margin-left: -100px;
-  width: 95px;
-}
-
-.revisions_git_access_box em {
-  font-style: italic;
+.label {
+  padding: 5px;
   font-weight: bold;
-  font-size: 110%;
-  color: #467AA7;
+  display: inline-block;
+  width: 100px;
+  text-align: center;
+  border-radius: 5px;
+  color: white;
 }
 
-.bootstrap-switch {
-  margin-left: 10px;
+.label-success {
+  background: #53C97C;
 }
-
-#tab-content-gitolite_redmine_config .switch-extended {
-  min-width: 175px;
-}
-
-#settings p {
-  margin-bottom: 15px;
-  margin-top: 15px;
+.label-error {
+  background: #C0392B;
 }
 
 
-/*
-REPOSITORY EDIT
-*/
-#repository-tabs i {
-  padding-right: 10px;
-}
-
-#revisions_git_settings div.split { display: block; float: left; width: 40%; }
-
-
-/*
-REPOSITORY VIEW
-*/
-#sidebar li.repository.git {
-  background: url("../images/git_icon.png") no-repeat scroll 0 50% transparent;
-  margin: 10px 10px 10px 0;
-  padding-left: 25px;
-}
-
-#sidebar ul.repository.git {
-  padding-left: 15px;
-  list-style-type: none;
-}
 
 #sidebar input.revisions-git-url {
   width: 90%;
   padding: 5px;
-}
-
-
-ad_buttons i {
-  color: #FFFFFF;
-  padding-right: 10px;
 }
 
 /*
