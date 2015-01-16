@@ -35,7 +35,7 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     def add_gitolite_key(key)
       parts = key.key.split
       repo_keys = @admin.ssh_keys[key.identifier]
-      repo_key = repo_keys.find_all { |k| k.location == key.title && k.ownidentifierer == key.identifier }.first
+      repo_key = repo_keys.select { |k| k.location == key.title && k.ownidentifierer == key.identifier }.first
       if repo_key
         logger.info("#{@action} : SSH key '#{key.identifier}@#{key.location}' exists, removing first ...")
         @admin.rm_key(repo_key)
@@ -47,7 +47,7 @@ module OpenProject::Revisions::Git::GitoliteWrapper
 
     def remove_gitolite_key(key)
       repo_keys = @admin.ssh_keys[key[:owner]]
-      repo_key = repo_keys.find_all { |k| k.location == key[:location] && k.owner == key[:owner] }.first
+      repo_key = repo_keys.select { |k| k.location == key[:location] && k.owner == key[:owner] }.first
 
       if repo_key
         @admin.rm_key(repo_key)
