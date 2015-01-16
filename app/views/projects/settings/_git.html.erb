@@ -1,13 +1,11 @@
 <p>
-	<%= form.text_field(:url, label: :label_git_clone_url, :size => 100, :value => repository.ssh_clone_command, :disabled => true) %>
+	<%= form.text_field(:url, label: :label_git_clone_url, size: 100, value: repository.ssh_clone_command, disabled: true) %>
 </p>
 <%= form.fields_for :extra_attributes do |e| %>
 	<p>
-		<%= e.check_box(:git_daemon, :label => :label_enable_git_daemon,
-		:checked => repository.project.is_public?) %>
+		<%=
+			e.check_box(:git_daemon, { label: :label_enable_git_daemon, checked: repository.project.is_public? })
+		%>
 	</p>
 	<p>
-		<%= e.check_box(:git_http, :label => :label_enable_smart_http,
-			:checked => Setting.plugin_openproject_revisions_git[:gitolite_http_by_default]) %>
-	</p>
 <% end %>

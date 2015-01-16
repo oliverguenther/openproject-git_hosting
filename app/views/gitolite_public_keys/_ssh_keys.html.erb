@@ -21,10 +21,10 @@
         <td><%= "#{key.fingerprint}" %></td>
         <td class="buttons">
           <%= link_to l(:button_delete),
-                 { :controller => target, :action => 'destroy', :id => key.id },
-                 :method => :delete,
-                 :class   => 'icon icon-delete',
-                 :confirm => l(:text_gitolite_key_destroy_confirmation, :title => keylabel(key)) %>
+                 { controller: target, action: 'destroy', id: key.id },
+                 method: :delete,
+                 class: 'icon icon-delete',
+                 confirm: l(:text_gitolite_key_destroy_confirmation, title: keylabel(key)) %>
         </td>
       </tr>
     <% end %>

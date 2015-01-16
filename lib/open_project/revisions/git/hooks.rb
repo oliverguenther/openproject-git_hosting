@@ -13,6 +13,6 @@ module OpenProject::Revisions::Git::Hooks
   end
 
   class AttributeHook < Redmine::Hook::ViewListener
-    render_on :view_create_project_form_attributes, :partial => 'projects/form/attributes/git_project'
+    render_on :view_create_project_form_attributes, partial: 'projects/form/attributes/git_project'
   end
 end

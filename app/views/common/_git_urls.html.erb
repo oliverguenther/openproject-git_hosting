@@ -8,7 +8,7 @@
           <input class="revisions-git-url" value="<%= value[:command] %>" readonly="readonly" />
           <% if value[:commmiter] %>
           <br/>
-          <span id="git_url_desc"><%= l(:label_this_urls_has_permissions, :span_id => 'git_url_permissions').html_safe %></span>
+          <span id="git_url_desc"><%= l(:label_this_urls_has_permissions, span_id: 'git_url_permissions').html_safe %></span>
           <% end %>
         </li>
       <% end %>

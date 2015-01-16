@@ -10,7 +10,7 @@
       git config --global user.name "<%= User.current.name(:firstname_lastname) %>"
       git config --global user.email <%= User.current.mail ? User.current.mail : "mail@example.com" %>
       <% if !User.current.anonymous? && User.current.gitolite_public_keys.length == 0 %>
-      <%= link_to "Upload SSH Public Key", {:controller => 'my', :action => 'account'} %>
+      <%= link_to "Upload SSH Public Key", {controller: 'my', action: 'account'} %>
       <% end %>
     </pre>
 
@@ -49,15 +49,18 @@
 <% content_for :sidebar do %>
   <h3><%= l(:label_repository_plural) %></h3>
   <ul class="repository git">
-    <li class="repository git"><%= link_to h(@repository.name), {:controller => 'repositories', :action => 'show', :id => @project, :repository_id => @repository.id, :rev => nil, :path => nil},
-                                  :class => 'repository' + (@repository.is_a?(Repository::Git) ? ' git' : '') + ' selected') %>
+    <li class="repository git">
+      <%= link_to h(@repository.name), { controller: 'repositories',
+            action: 'show', id: @project, repository_id: @repository.id, rev: nil, path: nil},
+          class: 'repository' + (@repository.is_a?(Repository::Git) ? ' git' : '') + ' selected')
+      %>
     </li>
   </ul>
 
   <% if @repository.is_a?(Repository::Git) && OpenProject::Revisions::Git::GitoliteWrapper.true?(:show_repositories_url) && User.current.allowed_to?(:view_changesets, @project) %>
     <div class="revisions_git_urls">
       <h3><%= l(:label_repository_access_url) %></h3>
-      <%= render :partial => 'common/git_urls', :locals => {:repository => @repository} %>
+      <%= render partial: 'common/git_urls', locals: {repository: @repository} %>
     </div>
   <% end %>
 <% end %>

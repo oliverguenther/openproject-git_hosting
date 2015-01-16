@@ -1,7 +1,6 @@
 module OpenProject::Revisions::Git
   module Patches
     module UsersControllerPatch
-
       include GitolitePublicKeysHelper
 
       def self.included(base)
@@ -14,9 +13,7 @@ module OpenProject::Revisions::Git
         end
       end
 
-
       module InstanceMethods
-
         def edit_with_revisions_git(&block)
           # Set public key values for view
           set_public_key_values
@@ -25,9 +22,7 @@ module OpenProject::Revisions::Git
           edit_without_revisions_git(&block)
         end
 
-
         private
-
 
         # Add in values for viewing public keys:
         def set_public_key_values

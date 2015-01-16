@@ -1,15 +1,15 @@
 <%= stylesheet_link_tag 'revisions_git/revisions_git' %>
-<%= call_hook(:view_repositories_show_contextual, { :repository => @repository, :project => @project }) %>
+<%= call_hook(:view_repositories_show_contextual, { repository: @repository, project: @project }) %>
 
 <div class="contextual">
-  <%= render :partial => 'navigation' %>
+  <%= render partial: 'navigation' %>
 </div>
 
-<h2><%= render :partial => 'breadcrumbs',
-               :locals => { :path => @path, :kind => 'dir', :revision => @rev } %></h2>
+<h2><%= render partial: 'breadcrumbs',
+               locals: { path: @path, kind: 'dir', revision: @rev } %></h2>
 
 <% if !@entries.nil? && authorize_for('repositories', 'browse') %>
-  <%= render :partial => 'dir_list' %>
+  <%= render partial: 'dir_list' %>
 <% end %>
 
 <%= render_properties(@properties) %>
@@ -17,44 +17,44 @@
 <% if authorize_for('repositories', 'revisions') %>
   <% if @changesets && !@changesets.empty? %>
     <h3><%= l(:label_latest_revision_plural) %></h3>
-    <%= render :partial => 'revisions',
-              :locals => {:project => @project, :path => @path,
-                          :revisions => @changesets, :entry => nil }%>
+    <%= render partial: 'revisions',
+              locals: {project: @project, path: @path,
+                          revisions: @changesets, entry: nil }%>
   <% end %>
   <p>
   <% has_branches = (!@repository.branches.nil? && @repository.branches.length > 0)
      sep = '' %>
   <% if @repository.supports_all_revisions? && @path.blank? %>
-    <%= link_to l(:label_view_all_revisions), :action => 'revisions', :id => @project,
-                :repository_id => @repository.id %>
+    <%= link_to l(:label_view_all_revisions), action: 'revisions', id: @project,
+                repository_id: @repository.id %>
     <% sep = '|' %>
   <% end %>
   <% if @repository.supports_directory_revisions? &&
          ( has_branches || !@path.blank? || !@rev.blank? ) %>
     <%= sep %>
     <%= link_to l(:label_view_revisions),
-                   :action => 'changes',
-                   :path   => to_path_param(@path),
-                   :id     => @project,
-                   :repository_id => @repository.id,
-                   :rev    => @rev %>
+                   action: 'changes',
+                   path: to_path_param(@path),
+                   id: @project,
+                   repository_id: @repository.id,
+                   rev: @rev %>
   <% end %>
   </p>
   <% if @repository.supports_all_revisions? %>
     <% content_for :header_tags do %>
       <%= auto_discovery_link_tag(
                    :atom, params.merge(
-                      {:format => 'atom', :action => 'revisions',
-                       :id => @project, :page => nil, :key => User.current.rss_key})) %>
+                      {format: 'atom', action: 'revisions',
+                       id: @project, page: nil, key: User.current.rss_key})) %>
    <% end %>
 
-   <%= call_hook(:view_repositories_show_bottom, { :repository => @repository, :project => @project }) %>
+   <%= call_hook(:view_repositories_show_bottom, { repository: @repository, project: @project }) %>
 
    <% other_formats_links do |f| %>
     <%= f.link_to 'Atom',
-                  :url => {:action => 'revisions', :id => @project,
-                           :repository_id => @repository.id,
-                           :key => User.current.rss_key} %>
+                  url: {action: 'revisions', id: @project,
+                           repository_id: @repository.id,
+                           key: User.current.rss_key} %>
     <% end %>
   <% end %>
 <% end %>
@@ -63,7 +63,7 @@
   <% if @repository.is_a?(Repository::Git) %>
     <div class="revisions_git_urls">
       <h3><%= l(:label_repository_access_url) %></h3>
-      <%= render :partial => 'common/git_urls', :locals => {:repository => @repository} %>
+      <%= render partial: 'common/git_urls', locals: {repository: @repository} %>
     </div>
   <% end %>
 

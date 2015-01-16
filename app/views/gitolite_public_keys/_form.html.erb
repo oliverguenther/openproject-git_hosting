@@ -1,4 +1,4 @@
-<%= stylesheet_link_tag 'application', :plugin => 'openproject_revisions_git' %>
+<%= stylesheet_link_tag 'application', plugin: 'openproject_revisions_git' %>
 
 <%# Controller is overriden for user key management /my/account/keys %>
 <% target ||= 'gitolite_public_keys' %>
@@ -8,14 +8,14 @@
 
   <fieldset class="public_key_view">
     <legend><%= l(:label_current_user_keys) %></legend>
-    <%= render :partial => 'gitolite_public_keys/ssh_keys', :locals => {:ssh_keys => @gitolite_user_keys, :target => target} %>
+    <%= render partial: 'gitolite_public_keys/ssh_keys', locals: { ssh_keys: @gitolite_user_keys, target: target } %>
   </fieldset>
 
   <br/>
 
   <fieldset class="public_key_view">
     <legend><%= l(:label_current_deploy_keys) %></legend>
-    <%= render :partial => 'gitolite_public_keys/ssh_keys', :locals => {:ssh_keys => @gitolite_deploy_keys, :target => target} %>
+    <%= render partial: 'gitolite_public_keys/ssh_keys', locals: { ssh_keys: @gitolite_deploy_keys, target: target } %>
   </fieldset>
 
   <br/>
@@ -26,14 +26,14 @@
     <div id="validation_messages"><%= error_messages_for 'gitolite_public_key' %></div>
 
     <%= labelled_tabular_form_for(:gitolite_public_key,
-          :url  => { :controller => target, :action => 'create' },
-          :method => :post ) do |f| %>
+          url: { controller: target, action: 'create' },
+          method: :post ) do |f| %>
 
-      <p><%= f.text_field :title, :label => :label_identifier_can_be_arbitrary, :required => true, :style => 'width: 97%;' %></p>
+      <p><%= f.text_field :title, label: :label_identifier_can_be_arbitrary, required: true, style: 'width: 97%;' %></p>
       <% if target == 'gitolite_public_keys' %>
         <p>
-          <%= f.hidden_field :user_id, :value => @user.id %>
-          <%= f.text_field :user, :label => l('activerecord.models.user'), :value => @user.name, :disabled => true, :style => 'width: 97%;' %>
+          <%= f.hidden_field :user_id, value: @user.id, %>
+          <%= f.text_field :user, label: l('activerecord.models.user'), value: @user.name, disabled: true, style: 'width: 97%;' %>
         </p>
       <% end %>
 
@@ -45,18 +45,18 @@
                                       [ l(:label_deploy_key), 1 ]
                                     ],
                                   ),
-                                  { :required => true, :label => :label_key_type },
-                                  { :class    => 'select_key_type' } %>
+                                  { required: true,, label: :label_key_type, },
+                                  { class: 'select_key_type', } %>
 
 
         </p>
       <% end %>
 
       <p>
-        <%= f.text_area :key, :label => :label_public_key, :required => true,
-              :style => "width: 97%; height: 200px; overflow: auto;",
-              :cols => nil,
-              :rows => nil %>
+        <%= f.text_area :key, label: :label_public_key, required: true,
+              style: 'width: 97%; height: 200px; overflow: auto;',
+              cols: nil,
+              rows: nil %>
         <br/>
         <em><%= l(:label_cut_and_paste) %></em>
       </p>

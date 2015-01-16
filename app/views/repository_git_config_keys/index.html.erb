@@ -3,7 +3,7 @@
   <% if user_allowed_to(:create_repository_git_config_keys, @project) %>
     <div class="contextual">
       <%= link_to(l(:label_git_config_key_add), new_repository_git_config_key_path(@repository),
-                                                  :class => 'icon icon-add modal-box') %>
+                                                  class: 'icon icon-add modal-box') %>
 
     </div>
   <% end %>
@@ -31,13 +31,13 @@
               <% if user_allowed_to(:edit_repository_git_config_keys, @project) %>
 
                 <%= link_to l(:button_edit), edit_repository_git_config_key_path(@repository, git_config_key),
-                                             :class => 'icon icon-edit modal-box' %>
+                                             class: 'icon icon-edit modal-box' %>
 
                 <%= link_to l(:button_delete), repository_git_config_key_path(@repository, git_config_key),
-                                               :remote  => true,
-                                               :method  => :delete,
-                                               :confirm => l(:text_are_you_sure),
-                                               :class   => 'icon icon-del' %>
+                                               remote: true,
+                                               method: :delete,
+                                               confirm: l(:text_are_you_sure),
+                                               class: 'icon icon-del' %>
               <% end %>
             </td>
           </tr>

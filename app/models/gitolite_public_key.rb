@@ -1,24 +1,24 @@
-  class GitolitePublicKey < ActiveRecord::Base
+class GitolitePublicKey < ActiveRecord::Base
   unloadable
 
   KEY_TYPE_USER = 0
   KEY_TYPE_DEPLOY = 1
 
-  DEPLOY_PSEUDO_USER = "deploy_key"
+  DEPLOY_PSEUDO_USER = 'deploy_key'
 
   belongs_to :user
 
   scope :user_key,   -> { where key_type: KEY_TYPE_USER }
   scope :deploy_key, -> { where key_type: KEY_TYPE_DEPLOY }
 
-  validates_presence_of   :title, :identifier, :key, :key_type
-  validates_inclusion_of  :key_type, :in => [KEY_TYPE_USER, KEY_TYPE_DEPLOY]
+  validates_presence_of :title, :identifier, :key, :key_type
+  validates_inclusion_of :key_type, in: [KEY_TYPE_USER, KEY_TYPE_DEPLOY]
 
-  validates_uniqueness_of :title,      :scope => :user_id
+  validates_uniqueness_of :title,      scope: :user_id
 
-  validates_format_of :title, :with => /\A[a-z0-9_\-]*\z/i
+  validates_format_of :title, with: /\A[a-z0-9_\-]*\z/i
 
-  validate :has_not_been_changed
+  validate :has_not_been_changed?
   validate :key_correctness
   validate :key_uniqueness
 
@@ -30,9 +30,8 @@
   after_commit ->(obj) { obj.add_ssh_key },     on: :create
   after_commit ->(obj) { obj.destroy_ssh_key }, on: :destroy
 
-
   def self.by_user(user)
-    where("user_id = ?", user.id)
+    where('user_id = ?', user.id)
   end
 
   # Returns the path to this key under the gitolite keydir
@@ -45,7 +44,7 @@
   # This is due to the new gitolite multi-keys organization
   # using folders. See http://gitolite.com/gitolite/users.html
   def key_path
-    File.join(self.user.gitolite_identifier, self.title, self.identifier)
+    File.join(user.gitolite_identifier, title, identifier)
   end
 
   def to_s
@@ -60,12 +59,10 @@
     self.identifier ||=
       begin
         case key_type
-          when KEY_TYPE_USER
-            self.user.gitolite_identifier
-          when KEY_TYPE_DEPLOY
-            "#{self.user.gitolite_identifier}_#{DEPLOY_PSEUDO_USER}"
-          else
-            nil
+        when KEY_TYPE_USER
+          user.gitolite_identifier
+        when KEY_TYPE_DEPLOY
+          "#{user.gitolite_identifier}_#{DEPLOY_PSEUDO_USER}"
         end
       end
   end
@@ -74,7 +71,6 @@
   def user_key?
     key_type == KEY_TYPE_USER
   end
-
 
   def deploy_key?
     key_type == KEY_TYPE_DEPLOY
@@ -86,15 +82,17 @@
     OpenProject::Revisions::Git::GitoliteWrapper.update(:add_ssh_key, self)
   end
 
-
   def destroy_ssh_key
     OpenProject::Revisions::Git::GitoliteWrapper.logger.info("User '#{User.current.login}' has deleted a SSH key")
 
-    repo_key = { title: self.title, key: self.key, location: self.title, owner: self.identifier, identifier: self.identifier }
+    repo_key = {
+      title: title, key: key,
+      location: title, owner: identifier,
+      identifier: identifier
+    }
 
     OpenProject::Revisions::Git::GitoliteWrapper.update(:delete_ssh_key, repo_key)
   end
-
 
   private
 
@@ -107,12 +105,11 @@
     if output
       self.fingerprint = output.split[1]
     end
-  rescue => e
+  rescue
     errors.add(:key, l(:error_key_corrupted))
   ensure
     file.unlink
   end
-
 
   # Strip leading and trailing whitespace
   def strip_whitespace
@@ -123,7 +120,6 @@
       self.key = key.strip
     end
   end
-
 
   # Remove control characters from key
   def remove_control_characters
@@ -143,14 +139,13 @@
     self.key = key.gsub(/[\a\r\n\t]/, '').strip
   end
 
-
-  def has_not_been_changed
+  def has_not_been_changed?
     unless new_record?
       has_errors = false
 
       %w(identifier key user_id key_type).each do |attribute|
         method = "#{attribute}_changed?"
-        if self.send(method)
+        if send(method)
           errors.add(attribute, 'may not be changed')
           has_errors = true
         end
@@ -160,25 +155,24 @@
     end
   end
 
-
   def key_correctness
     # Test correctness of fingerprint from output
     # and general ssh-(r|d|ecd)sa <key> <id> structure
-    (self.fingerprint =~ /^(\w{2}:?)+$/i) &&
-    (key.match(/^(\S+)\s+(\S+)/))
+    (fingerprint =~ /^(\w{2}:?)+$/i) &&
+      (key.match(/^(\S+)\s+(\S+)/))
   end
 
   def key_uniqueness
     return if !new_record?
 
-    existing = GitolitePublicKey.find_by_fingerprint(self.fingerprint)
+    existing = GitolitePublicKey.find_by_fingerprint(fingerprint)
     if existing
       # Hm.... have a duplicate key!
       if existing.user == User.current
-        errors.add(:key, l(:error_key_in_use_by_you, :name => existing.title))
+        errors.add(:key, l(:error_key_in_use_by_you, name: existing.title))
         return false
       elsif User.current.admin?
-        errors.add(:key, l(:error_key_in_use_by_other, :login => existing.user.login, :name => existing.title))
+        errors.add(:key, l(:error_key_in_use_by_other, login: existing.user.login, name: existing.title))
         return false
       else
         errors.add(:key, l(:error_key_in_use_by_someone))
@@ -187,5 +181,4 @@
     end
     true
   end
-
 end

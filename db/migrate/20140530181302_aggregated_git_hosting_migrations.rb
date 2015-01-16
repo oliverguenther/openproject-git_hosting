@@ -1,10 +1,9 @@
 
-require Rails.root.join("db","migrate","migration_utils","migration_squasher").to_s
-require Rails.root.join("db","migrate","migration_utils","setting_renamer").to_s
+require Rails.root.join('db', 'migrate', 'migration_utils', 'migration_squasher').to_s
+require Rails.root.join('db', 'migrate', 'migration_utils', 'setting_renamer').to_s
 require 'open_project/plugins/migration_mapping'
 # This migration aggregates the migrations detailed in MIGRATION_FILES
 class AggregatedGitHostingMigrations < ActiveRecord::Migration
-
   MIGRATION_FILES = <<-MIGRATIONS
     20091119162426_set_mirror_role_permissions.rb
     20091119162427_create_gitolite_public_keys.rb
@@ -33,21 +32,20 @@ class AggregatedGitHostingMigrations < ActiveRecord::Migration
     20140417004100_enforce_models_constraints.rb
   MIGRATIONS
 
-  OLD_PLUGIN_NAME = "redmine_revisions_git"
+  OLD_PLUGIN_NAME = 'redmine_revisions_git'
 
   def up
-    migration_names = OpenProject::Plugins::MigrationMapping.migration_files_to_migration_names(MIGRATION_FILES, OLD_PLUGIN_NAME)
+    migration_names = OpenProject::Plugins::MigrationMapping.migration_files_to_migration_names(
+      MIGRATION_FILES, OLD_PLUGIN_NAME
+    )
     Migration::MigrationSquasher.squash(migration_names) do
-
-
       create_table :gitolite_public_keys do |t|
-        t.column :title, :string, :null => false
-        t.column :identifier, :string, :null => false
-        t.column :key, :text, :null => false
-        t.column :key_type, :integer, :null => false,
-                 :default => GitolitePublicKey::KEY_TYPE_USER
-        t.column :delete_when_unused, :boolean, :default => true
-        t.references :user, :null => false
+        t.column :title, :string, null: false
+        t.column :identifier, :string, null: false
+        t.column :key, :text, null: false
+        t.column :key_type, :integer, null: false, default: GitolitePublicKey::KEY_TYPE_USER
+        t.column :delete_when_unused, :boolean, default: true
+        t.references :user, null: false
         t.timestamps
       end
 
@@ -55,21 +53,21 @@ class AggregatedGitHostingMigrations < ActiveRecord::Migration
       add_index :gitolite_public_keys, :identifier
 
       create_table :repository_git_extras do |t|
-        t.references :repository, :null => false
-        t.column :git_daemon, :boolean, :default => true
-        t.column :git_http,   :boolean, :default => true
-        t.column :git_notify, :boolean, :default => false
-        t.column :default_branch, :string, :null => false
-        t.column :key, :string, :null => false
+        t.references :repository, null: false
+        t.column :git_daemon, :boolean, default: true
+        t.column :git_http,   :boolean, default: true
+        t.column :git_notify, :boolean, default: false
+        t.column :default_branch, :string, null: false
+        t.column :key, :string, null: false
       end
 
       create_table :repository_git_config_keys do |t|
-        t.references :repository, :null => false
-        t.column :key,   :string, :null => false
-        t.column :value, :string, :null => false
+        t.references :repository, null: false
+        t.column :key,   :string, null: false
+        t.column :value, :string, null: false
       end
 
-      Migration::SettingRenamer.rename(OLD_PLUGIN_NAME, "plugin_openproject_revisions_git")
+      Migration::SettingRenamer.rename(OLD_PLUGIN_NAME, 'plugin_openproject_revisions_git')
     end
   end
 
@@ -79,6 +77,3 @@ class AggregatedGitHostingMigrations < ActiveRecord::Migration
     drop_table :repository_git_config_keys
   end
 end
-
-
-

@@ -1,37 +1,44 @@
 module OpenProject::Revisions::Git::Hooks
-
   class GitoliteUpdaterHook
-
-    def accepts?(method, context)
+    def accepts?(_, context)
       repository = context[:repository] || context[:project].repository
-      return repository.is_a?(Repository::Git)
+      repository.is_a?(Repository::Git)
     end
 
     def membership_updated(context)
-
       project = context[:project]
-      OpenProject::Revisions::Git::GitoliteWrapper.logger.info("Membership changes on project '#{project.identifier}', update!")
+      OpenProject::Revisions::Git::GitoliteWrapper.logger.info(
+        "Membership changes on project '#{project.identifier}', update!"
+      )
       OpenProject::Revisions::Git::GitoliteWrapper.update(:update_repository, project.repository)
+    end
+
+    def project_url_changed?(repository)
+      repository.url != repository.git_path || repository.url != repository.root_url
     end
 
     def project_updated(context)
       project = context[:project]
 
-      if project.repository.url != project.repository.git_path ||
-         project.repository.url != project.repository.root_url
-
+      if project_url_changed?(project.repository)
         OpenProject::Revisions::Git::GitoliteWrapper.logger.info("Move repositories of project : '#{project}'")
         OpenProject::Revisions::Git::GitoliteWrapper.update(:move_repositories, project.id)
       else
-        # Adjust daemon status
-        # Go through all gitolite repos and disable Git daemon if necessary
-        if project.repository.extra[:git_daemon] && !project.is_public
-          project.repository.extra[:git_daemon] = false
-          project.repository.extra.save
-        end
-        OpenProject::Revisions::Git::GitoliteWrapper.logger.info("Set Git daemon for repositories of project : '#{project}'" )
-        OpenProject::Revisions::Git::GitoliteWrapper.update(:update_repository, project.repository)
+        update_repo_daemon project
       end
+    end
+
+    def update_repo_daemon(project)
+      # Adjust daemon status
+      # Go through all gitolite repos and disable Git daemon if necessary
+      if !project.is_public
+        project.repository.extra[:git_daemon] = false
+        project.repository.extra.save
+      end
+      OpenProject::Revisions::Git::GitoliteWrapper.logger.info(
+        "Set Git daemon for repositories of project : '#{project}'"
+      )
+      OpenProject::Revisions::Git::GitoliteWrapper.update(:update_repository, project.repository)
     end
 
     def project_deletion_imminent(context)
@@ -72,12 +79,14 @@ module OpenProject::Revisions::Git::Hooks
     # of all subprojects with two keys:
     # name, path of the repository
     def flatten_project_git_repos(project)
-      projects = project.self_and_descendants.uniq
-        .select{|p| p.repository.is_a?(Repository::Git)}
+      projects =
+        project.self_and_descendants
+        .uniq
+        .select { |p| p.repository.is_a?(Repository::Git) }
 
-      projects.map do |project|
-        { name: project.repository.gitolite_repository_name,
-          path: project.repository.git_path }
+      projects.map do |p|
+        { name: p.repository.gitolite_repository_name,
+          path: p.repository.git_path }
       end
     end
   end

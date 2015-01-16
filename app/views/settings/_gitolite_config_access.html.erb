@@ -13,7 +13,7 @@
 
 <p>
   <label><%= l(:label_https_server_domain) %></label>
-  <%= text_field_tag("settings[https_server_domain]", https_server_domain, :size => 60) %>
+  <%= text_field_tag("settings[https_server_domain]", https_server_domain, size: 60) %>
   <br />
   <em><%= l(:label_https_server_domain_desc) %></em>
 </p>
@@ -37,7 +37,7 @@
 
 <p>
   <label><%= l(:ssh_server_domain) %></label>
-  <%= text_field_tag("settings[ssh_server_domain]", ssh_server_domain, :size => 60) %>
+  <%= text_field_tag("settings[ssh_server_domain]", ssh_server_domain, size: 60) %>
   <br />
   <em><%= l(:label_ssh_server_domain_desc) %></em>
 </p>

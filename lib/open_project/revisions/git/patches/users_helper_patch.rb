@@ -1,7 +1,6 @@
 module OpenProject::Revisions::Git
   module Patches
     module UsersHelperPatch
-
       def self.included(base)
         base.send(:include, InstanceMethods)
         base.class_eval do
@@ -12,16 +11,13 @@ module OpenProject::Revisions::Git
       end
 
       module InstanceMethods
-
         # Add a public_keys tab to the user administration page
         def user_settings_tabs_with_git(&block)
           tabs = user_settings_tabs_without_git(&block)
-          tabs << { :name => 'keys', :partial => 'gitolite_public_keys/form', :label => :label_public_keys }
-          return tabs
+          tabs << { name: 'keys', partial: 'gitolite_public_keys/form', label: :label_public_keys }
+          tabs
         end
-
       end
-
     end
   end
 end

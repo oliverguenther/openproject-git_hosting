@@ -2,7 +2,6 @@ require 'gitolite'
 
 module OpenProject::Revisions::Git
   module GitoliteWrapper
-
     def self.logger
       Rails.logger
     end
@@ -20,8 +19,8 @@ module OpenProject::Revisions::Git
     end
 
     def self.gitolite_version
-      logger.debug("Gitolite updating version")
-      out, err, code = ssh_shell('info')
+      logger.debug('Gitolite updating version')
+      out, err, _ = ssh_shell('info')
       return 3 if out.include?('running gitolite3')
       return 2 if out =~ /gitolite[ -]v?2./
       logger.error("Couldn't retrieve gitolite version through SSH.")
@@ -34,21 +33,17 @@ module OpenProject::Revisions::Git
       ['/openproject/revisions/git', key].join
     end
 
-    @@openproject_user = nil
     def self.openproject_user
-      @@openproject_user = (%x[whoami]).chomp.strip if @@openproject_user.nil?
-      @@openproject_user
+      `whoami`.chomp.strip
     end
 
     def self.http_server_domain
       Setting.plugin_openproject_revisions_git[:http_server_domain]
     end
 
-
     def self.https_server_domain
       Setting.plugin_openproject_revisions_git[:https_server_domain]
     end
-
 
     def self.gitolite_server_port
       Setting.plugin_openproject_revisions_git[:gitolite_server_port]
@@ -58,21 +53,17 @@ module OpenProject::Revisions::Git
       Setting.plugin_openproject_revisions_git[:ssh_server_domain]
     end
 
-
     def self.gitolite_ssh_private_key
       Setting.plugin_openproject_revisions_git[:gitolite_ssh_private_key]
     end
-
 
     def self.gitolite_ssh_public_key
       Setting.plugin_openproject_revisions_git[:gitolite_ssh_public_key]
     end
 
-
     def self.git_config_username
       Setting.plugin_openproject_revisions_git[:git_config_username]
     end
-
 
     def self.git_config_email
       Setting.plugin_openproject_revisions_git[:git_config_email]
@@ -88,17 +79,17 @@ module OpenProject::Revisions::Git
 
     def self.gitolite_admin_settings
       {
-          git_user: gitolite_user,
-          host: ssh_server_domain,
+        git_user: gitolite_user,
+        host: ssh_server_domain,
 
-          author_name: git_config_username,
-          author_email: git_config_email,
+        author_name: git_config_username,
+        author_email: git_config_email,
 
-          public_key: gitolite_ssh_public_key,
-          private_key: gitolite_ssh_private_key,
+        public_key: gitolite_ssh_public_key,
+        private_key: gitolite_ssh_private_key,
 
-          key_subdir: 'openproject',
-          config_file: 'openproject.conf'
+        key_subdir: 'openproject',
+        config_file: 'openproject.conf'
       }
     end
 
@@ -140,8 +131,10 @@ module OpenProject::Revisions::Git
     # * (-o BatchMode=yes) Never ask for a password
     # * <gitolite_user>@localhost (see +gitolite_url+)
     def self.ssh_shell_params
-      ['-T', '-o', 'BatchMode=yes', gitolite_url, '-p',
-        gitolite_server_port, '-i', gitolite_ssh_private_key]
+      [
+        '-T', '-o', 'BatchMode=yes', gitolite_url, '-p',
+        gitolite_server_port, '-i', gitolite_ssh_private_key
+      ]
     end
 
     ##########################
@@ -156,16 +149,18 @@ module OpenProject::Revisions::Git
       Gitolite::GitoliteAdmin.new(admin_dir, gitolite_admin_settings)
     end
 
-    WRAPPERS = [GitoliteWrapper::Admin, GitoliteWrapper::Repositories,
-      GitoliteWrapper::Users, GitoliteWrapper::Projects]
+    WRAPPERS = [
+      GitoliteWrapper::Admin, GitoliteWrapper::Repositories,
+      GitoliteWrapper::Users, GitoliteWrapper::Projects
+    ]
 
     # Update the Gitolite Repository
     #
     # action: An API action defined in one of the gitolite/* classes.
-    def self.update(action, object, options={})
+    def self.update(action, object, options = {})
       WRAPPERS.each do |wrappermod|
         if wrappermod.method_defined?(action)
-          wrapper = wrappermod.new(action,object,options)
+          wrapper = wrappermod.new(action, object, options)
 
           if true?(:use_delayed_jobs)
             logger.info("Queueing delayed job '#{action}'")
@@ -180,13 +175,11 @@ module OpenProject::Revisions::Git
       raise "No available Wrapper for action '#{action}' found."
     end
 
-
     ##########################
     #                        #
     #  Config Tests / Setup  #
     #                        #
     ##########################
-
 
     # Returns the gitolite welcome/info banner, containing its version.
     #
@@ -201,13 +194,12 @@ module OpenProject::Revisions::Git
 
     def self.git_repositories
       Dir.chdir(gitolite_global_storage_path) do
-        Dir.glob("**/*.git")
+        Dir.glob('**/*.git')
       end
     rescue => e
       errstr = "Error while getting Gitolite repositories: #{e.message}"
       logger.error(errstr)
       errstr
     end
-
   end
 end

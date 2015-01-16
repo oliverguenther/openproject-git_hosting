@@ -86,9 +86,7 @@ fr:
   label_repository_options: Options du dépôt
   label_enable_git_notify: Activer la liste de diffusion
   label_enable_git_daemon: Activer le daemon Git
-  label_enable_smart_http: Mode Smart HTTP
   label_git_daemon: Daemon Git
-  label_smart_http: Smart HTTP
   label_repository_default_branch: Branche par défaut
   label_init_repo_with_readme: Initialiser le dépôt avec un fichier README
   label_browse_repository: Parcourir les sources
@@ -248,7 +246,6 @@ fr:
   label_show_repositories_url: Afficher les URL des dépôts
 
   label_gitolite_daemon_by_default: Activer le daemon Git pour les nouveaux dépôts par défaut
-  label_gitolite_http_by_default: Activer le mode Smart HTTP pour les nouveaux dépôts par défaut
 
   label_http_only: HTTP seulement
   label_https_only: HTTPS seulement

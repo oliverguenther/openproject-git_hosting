@@ -1,11 +1,8 @@
 require 'pathname'
 module OpenProject::Revisions::Git::GitoliteWrapper
   module RepositoriesHelper
-
-    def handle_repository_add(repository, opts = {})
+    def handle_repository_add(repository)
       repo_name = repository.gitolite_repository_name
-      repo_path = repository.git_path
-      project   = repository.project
 
       if @gitolite_config.repos[repo_name]
         logger.warn("#{@action} : repository '#{repo_name}' already exists in Gitolite, removing first")
@@ -16,18 +13,18 @@ module OpenProject::Revisions::Git::GitoliteWrapper
       repo_conf = Gitolite::Config::Repo.new(repo_name)
       set_repo_config_keys(repo_conf, repository)
 
+      builder = OpenProject::Revisions::Git::GitoliteWrapper::PermissionBuilder.new repository
+      repo_conf.permissions = builder.build_permissions!
       @gitolite_config.add_repo(repo_conf)
-      repo_conf.permissions = [build_permissions(repository)]
     end
-
 
     #
     # Sets the git config-keys for the given repo configuration
     #
     def set_repo_config_keys(repo_conf, repository)
       # Set post-receive hook params
-      repo_conf.set_git_config("openproject.githosting.projectid", repository.project.identifier.to_s)
-      repo_conf.set_git_config("http.uploadpack", (User.anonymous.allowed_to?(:view_changesets, repository.project) ||
+      repo_conf.set_git_config('openproject.githosting.projectid', repository.project.identifier.to_s)
+      repo_conf.set_git_config('http.uploadpack', (User.anonymous.allowed_to?(:view_changesets, repository.project) ||
         repository.extra[:git_http]))
 
       # Set Git config keys
@@ -59,18 +56,15 @@ module OpenProject::Revisions::Git::GitoliteWrapper
       end
     end
 
-
     # Move a list of git repositories to their new location
     #
     # The old repository location is expected to be available from its url.
     # Upon moving the project (e.g., to a subproject),
     # the repository's url will still reflect its old location.
     def handle_repositories_move(repos)
-
       # We'll need the repository root directory.
       gitolite_repos_root = OpenProject::Revisions::Git::GitoliteWrapper.gitolite_global_storage_path
       repos.each do |repo|
-
         # Old name is the <path> section of above, thus extract it from url.
         # But remove the '.git' part.
         old_repository_name = File.basename(repo.url, '.git')
@@ -83,7 +77,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
       end
     end
 
-
     # Move a repository in gitolite-admin from its old entry to a new one
     #
     # This involves the following steps:
@@ -92,7 +85,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     # 3. Add the repository using +repo.gitolite_repository_name+
     #
     def do_move_repository(repo, old_path, old_name)
-
       new_name  = repo.gitolite_repository_name
       new_path  = repo.absolute_repository_path
 
@@ -100,18 +92,16 @@ module OpenProject::Revisions::Git::GitoliteWrapper
       logger.debug("-- On filesystem, this means '#{old_path}' -> '#{new_path}'")
 
       # Remove old config entry
-      old_repo_conf = @gitolite_config.rm_repo(old_name)
+      @gitolite_config.rm_repo(old_name)
 
       # Move the repo on filesystem
       move_physical_repo(old_path, new_path)
 
       # Add the repo as new
       handle_repository_add(repo)
-
     end
 
     def move_physical_repo(old_path, new_path)
-
       if old_path == new_path
         logger.warn("#{@action} : old repository and new repository are identical '#{old_path}' .. why move?")
         return
@@ -149,7 +139,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
       FileUtils.rm_rf(path)
 
       loop do
-
         # Stop deletion upon finding a non-empty parent repository
         break unless parent.children(false).empty?
 
@@ -160,43 +149,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
         FileUtils.rmdir(parent)
         parent = parent.parent
       end
-    end
-
-    # Builds the set of permissions for all
-    # users and deploy keys of the repository
-    #
-    def build_permissions(repository)
-      users   = repository.project.member_principals.map(&:user).compact.uniq
-      project = repository.project
-
-      rewind = []
-      write  = []
-      read   = []
-
-      rewind_users = users.select{|user| user.allowed_to?(:manage_repository, project)}
-      write_users  = users.select{|user| user.allowed_to?(:commit_access, project)} - rewind_users
-      read_users   = users.select{|user| user.allowed_to?(:view_changesets, project)} - rewind_users - write_users
-
-      if project.active?
-        rewind = rewind_users.map{|user| user.gitolite_identifier}
-        write  = write_users.map{|user| user.gitolite_identifier}
-        read   = read_users.map{|user| user.gitolite_identifier}
-
-        read << "DUMMY_REDMINE_KEY" if read.empty? && write.empty? && rewind.empty?
-        read << "gitweb" if User.anonymous.allowed_to?(:browse_repository, project) && repository.extra[:git_http] != 0
-        read << "daemon" if User.anonymous.allowed_to?(:view_changesets, project) && repository.extra[:git_daemon]
-      else
-        all_read = rewind_users + write_users + read_users
-        read     = all_read.map{|user| user.gitolite_identifier}
-        read << "REDMINE_CLOSED_PROJECT" if read.empty?
-      end
-
-      permissions = {}
-      permissions["RW+"] = {"" => rewind.uniq.sort} unless rewind.empty?
-      permissions["RW"] = {"" => write.uniq.sort} unless write.empty?
-      permissions["R"] = {"" => read.uniq.sort} unless read.empty?
-
-      permissions
     end
   end
 end

@@ -7,29 +7,24 @@ class MyPublicKeysController < ApplicationController
   menu_item :public_keys
 
   before_filter :require_login
-  
-  before_filter :set_my_keys, :only => [:index]
-  before_filter :find_gitolite_public_key, :only => [:destroy]
-
-
+  before_filter :set_my_keys, only: [:index]
+  before_filter :find_gitolite_public_key, only: [:destroy]
 
   def create
-    @gitolite_public_key = GitolitePublicKey.new(gitolite_keys_allowed_params.merge(:user => User.current))
-    
+    @gitolite_public_key = GitolitePublicKey.new(gitolite_keys_allowed_params.merge(user: User.current))
     save_and_flash
-    redirect_to url_for(:action => 'index')
+    redirect_to url_for(action: 'index')
   end
 
   def destroy
     if request.delete?
       if @gitolite_public_key.destroy
-        flash[:notice] = l(:notice_public_key_deleted, :title => view_context.keylabel(@gitolite_public_key)).html_safe
+        flash[:notice] = l(:notice_public_key_deleted, title: view_context.keylabel(@gitolite_public_key)).html_safe
       end
-      redirect_to url_for(:action => 'index')
+      redirect_to url_for(action: 'index')
 
     end
   end
-
 
   private
 
@@ -41,6 +36,4 @@ class MyPublicKeysController < ApplicationController
   def gitolite_keys_allowed_params
     params.require(:gitolite_public_key).permit(:title, :key, :key_type)
   end
-
-
 end

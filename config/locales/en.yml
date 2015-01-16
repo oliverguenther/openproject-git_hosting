@@ -87,9 +87,7 @@ en:
   label_repository_options: Repository options
   label_enable_git_notify: Enable Mailing list
   label_enable_git_daemon: Enable Git Daemon
-  label_enable_smart_http: Smart HTTP Mode
   label_git_daemon: Git Daemon
-  label_smart_http: Smart HTTP
   label_repository_default_branch: Repository default branch
   label_init_repo_with_readme: Initialize this repository with a README
   label_browse_repository: Browse repository
@@ -258,7 +256,6 @@ en:
   label_show_repositories_url: Show checkout URL's?
 
   label_gitolite_daemon_by_default: Enable Git Daemon mode for new repositories by default?
-  label_gitolite_http_by_default: Enable Smart HTTP mode for new repositories by default?
 
   label_http_only: HTTP Only
   label_https_only: HTTPS Only
@@ -331,7 +328,7 @@ en:
   label_gitolite_rescue: Gitolite Rescue
 
   label_resync_all_projects: Resync all projects ?
-  label_resync_all_ssh_keys: Resync all SSH keys ?
+  label_resync_all_projects_desc: Check this box and apply to rewrite the whole gitolite config file.
 
   # Misc
   label_select_all: Select all

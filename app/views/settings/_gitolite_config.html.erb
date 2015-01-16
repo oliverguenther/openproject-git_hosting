@@ -3,25 +3,25 @@
 <p>
   <label><%= l(:label_gitolite_user) %></label>
   <%= text_field_tag("settings[gitolite_user]",
-    Setting.plugin_openproject_revisions_git[:gitolite_user], :size => 60)
+    Setting.plugin_openproject_revisions_git[:gitolite_user], size: 60)
   %>
 </p>
 
 <p>
   <label><%= l(:label_gitolite_ssh_private_key) %></label>
   <%= text_field_tag("settings[gitolite_ssh_private_key]",
-    Setting.plugin_openproject_revisions_git[:gitolite_ssh_private_key], :size => 110) %>
+    Setting.plugin_openproject_revisions_git[:gitolite_ssh_private_key], size: 110) %>
 </p>
 
 <p>
   <label><%= l(:label_gitolite_ssh_public_key) %></label>
   <%= text_field_tag("settings[gitolite_ssh_public_key]",
-    Setting.plugin_openproject_revisions_git[:gitolite_ssh_public_key], :size => 110) %>
+    Setting.plugin_openproject_revisions_git[:gitolite_ssh_public_key], size: 110) %>
 </p>
 
 <p>
   <label><%= l(:label_gitolite_server_port) %></label>
-  <%= text_field_tag("settings[gitolite_server_port]", Setting.plugin_openproject_revisions_git[:gitolite_server_port], :size => 5) %>
+  <%= text_field_tag("settings[gitolite_server_port]", Setting.plugin_openproject_revisions_git[:gitolite_server_port], size: 5) %>
 </p>
 
 <p>
@@ -38,7 +38,7 @@
 <p>
   <label><%= l(:label_gitolite_admin_dir) %></label>
   <%= text_field_tag("settings[gitolite_admin_dir]",
-  Setting.plugin_openproject_revisions_git[:gitolite_admin_dir], :size => 60) %>
+  Setting.plugin_openproject_revisions_git[:gitolite_admin_dir], size: 60) %>
   <br />
   <em><%= l(:label_gitolite_admin_dir_desc) %></em>
 </p>
@@ -46,7 +46,7 @@
 <p>
   <label><%= l(:label_gitolite_global_storage_path) %></label>
   <%= text_field_tag("settings[gitolite_global_storage_path]",
-    Setting.plugin_openproject_revisions_git[:gitolite_global_storage_path], :size => 60) %>
+    Setting.plugin_openproject_revisions_git[:gitolite_global_storage_path], size: 60) %>
   <br />
   <em><%= l(:label_gitolite_global_storage_path_desc) %></em>
 </p>
@@ -65,7 +65,7 @@
 <p>
   <label><%= l(:label_git_config_username) %></label>
   <%= text_field_tag("settings[git_config_username]",
-    Setting.plugin_openproject_revisions_git[:git_config_username], :size => 60) %>
+    Setting.plugin_openproject_revisions_git[:git_config_username], size: 60) %>
   <br />
   <em><%= l(:label_git_config_username_desc) %></em>
 </p>
@@ -73,7 +73,7 @@
 <p>
   <label><%= l(:label_git_config_email) %></label>
   <%= text_field_tag("settings[git_config_email]",
-     Setting.plugin_openproject_revisions_git[:git_config_email], :size => 60) %>
+     Setting.plugin_openproject_revisions_git[:git_config_email], size: 60) %>
   <br />
   <em><%= l(:label_git_config_email_desc) %></em>
 </p>

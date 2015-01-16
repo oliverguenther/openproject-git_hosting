@@ -1,9 +1,8 @@
 module OpenProject::Revisions::Git::GitoliteWrapper
   class Admin
-
     attr_reader :admin
 
-    def initialize(action, object_id, options={})
+    def initialize(action, object_id, options = {})
       @object_id      = object_id
       @action         = action
       @options        = options
@@ -30,6 +29,5 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     rescue => e
       logger.error { "#{e.message}" }
     end
-
   end
- end
+end

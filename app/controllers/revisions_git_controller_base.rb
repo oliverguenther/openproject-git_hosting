@@ -11,18 +11,14 @@ class RevisionsGitControllerBase < ApplicationController
 
   helper :revisions_git
 
-
   def show
     render_404
   end
 
-
   def edit
   end
 
-
   private
-
 
   def set_repository_variable
     @repository = Repository.find_by_id(params[:repository_id])
@@ -31,14 +27,12 @@ class RevisionsGitControllerBase < ApplicationController
     end
   end
 
-
   def set_project_variable
     @project = @repository.project
     if @project.nil?
       render_404
     end
   end
-
 
   def check_required_permissions
     # Deny access if the current user is not allowed to manage the project's repository
@@ -62,14 +56,11 @@ class RevisionsGitControllerBase < ApplicationController
     end
   end
 
-
   def success_url
-    url_for(:controller => 'repositories', :action => 'edit', :id => @repository.id, :tab => @tab)
+    url_for(controller: 'repositories', action: 'edit', id: @repository.id, tab: @tab)
   end
-
 
   def check_xhr_request
     @is_xhr ||= request.xhr?
   end
-
 end

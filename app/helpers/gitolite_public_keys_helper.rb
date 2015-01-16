@@ -1,5 +1,4 @@
 module GitolitePublicKeysHelper
-
   def keylabel(key)
     if key.user == User.current
       "'#{key.title}'"
@@ -8,7 +7,6 @@ module GitolitePublicKeysHelper
     end
   end
 
-
   def keylabel_text(key)
     if key.user == User.current
       "#{key.title}"
@@ -16,7 +14,6 @@ module GitolitePublicKeysHelper
       "#{key.user.login}@#{key.title}"
     end
   end
-
 
   def set_user_keys
     @gitolite_user_keys   = @user.gitolite_public_keys.user_key.order('title ASC, created_at ASC')
@@ -34,16 +31,13 @@ module GitolitePublicKeysHelper
     end
   end
 
-
   def save_and_flash
     if @gitolite_public_key.save
-      flash[:notice] = l(:notice_public_key_created, :title => view_context.keylabel(@gitolite_public_key)).html_safe
+      flash[:notice] = l(:notice_public_key_created, title: view_context.keylabel(@gitolite_public_key)).html_safe
     else
       flash[:error] = @gitolite_public_key.errors.full_messages.to_sentence
     end
   end
-
-
 
   def can_create_deployment_keys_for_some_project(theuser = User.current)
     theuser.projects_by_role.each_key do |role|
@@ -51,5 +45,4 @@ module GitolitePublicKeysHelper
     end
     false
   end
-
 end

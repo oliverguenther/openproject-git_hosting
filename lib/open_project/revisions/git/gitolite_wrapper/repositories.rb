@@ -1,13 +1,10 @@
 module OpenProject::Revisions::Git::GitoliteWrapper
   class Repositories < Admin
-
     include OpenProject::Revisions::Git::GitoliteWrapper::RepositoriesHelper
-
 
     def add_repository
       repository = @object_id
       @admin.transaction do
-
         handle_repository_add(repository)
 
         gitolite_admin_repo_commit("#{repository.gitolite_repository_name}")
@@ -15,10 +12,7 @@ module OpenProject::Revisions::Git::GitoliteWrapper
       end
     end
 
-
     def update_repository
-      repository = @object_id
-
       # We override the repository in gitolite anyway
       add_repository
     end
@@ -28,7 +22,6 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     def remove_repositories
       handle_repository_delete(@object_id)
     end
-
 
     # Delete the given repositories.
     #
@@ -41,12 +34,10 @@ module OpenProject::Revisions::Git::GitoliteWrapper
     # (and all empty parent directories within the repository storage)
     def delete_repositories
       handle_repository_delete(@object_id) do |repo|
-
         # Delete all empty parent directories
         # From the lowermost repository
         clean_repo_dir(repo[:path])
       end
     end
-
   end
 end

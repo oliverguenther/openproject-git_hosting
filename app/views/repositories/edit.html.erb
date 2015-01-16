@@ -1,13 +1,13 @@
 <% if @repository && @repository.is_a?(Repository::Git) %>
   <div class="revisions_git box">
     <h3><%= l(:label_repository_access_url) %></h3>
-    <%= render :partial => 'common/git_urls', :locals => {:repository => @repository} %>
+    <%= render partial: 'common/git_urls', locals: {repository: @repository} %>
   </div>
 <% end %>
 
 
-<%= labelled_form_for :repository, @repository, :url => repository_path(@repository), :html => {:method => :put} do |f| %>
-  <%= render :partial => 'form', :locals => {:f => f} %>
+<%= labelled_form_for :repository, @repository, url: repository_path(@repository), html: {method: :put} do |f| %>
+  <%= render partial: 'form', locals: {f: f} %>
 <% end %>
 
 
