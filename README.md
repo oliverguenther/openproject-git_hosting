@@ -95,8 +95,8 @@ OpenProject identifies project identifiers in gitolite through git config keys, 
 
 Add a Gemfile.plugins to your OpenProject root with the following contents:
 
-	gem "openproject-revisions", git: "https://github.com/oliverguenther/openproject-revisions.git" branch: "dev"
-	gem "openproject-revisions_git", git: "https://github.com/oliverguenther/openproject-revisions_git.git" branch: "dev"
+	gem "openproject-revisions", :git => "https://github.com/oliverguenther/openproject-revisions.git", :branch => "dev"
+	gem "openproject-revisions_git", :git => "https://github.com/oliverguenther/openproject-revisions_git.git", :branch => "dev" branch: "dev"
 
 #### 2. Gitolite access rights
 
