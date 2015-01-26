@@ -2,14 +2,16 @@
   <div id="git_url_box">
     <ul id="git_url_list">
       <% repository.available_urls.each do |key, value| %>
-        <li>
-          <p><%= key.upcase %></p>
-          <input class="revisions-git-url" value="<%= value[:command] %>" readonly="readonly" />
-          <% if value[:commmiter] %>
-          <br/>
-          <span id="git_url_desc"><%= l(:label_this_urls_has_permissions, span_id: 'git_url_permissions').html_safe %></span>
-          <% end %>
-        </li>
+        <% unless value.nil? %>
+          <li>
+            <p><%= key.upcase %></p>
+            <input class="revisions-git-url" value="<%= value[:command] %>" readonly="readonly" />
+            <% if value[:commmiter] %>
+            <br/>
+            <span id="git_url_desc"><%= l(:label_this_urls_has_permissions, span_id: 'git_url_permissions').html_safe %></span>
+            <% end %>
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </div>
