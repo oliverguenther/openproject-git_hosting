@@ -3,6 +3,8 @@
 [![Dependency Status](https://gemnasium.com/oliverguenther/openproject-revisions_git.svg)](https://gemnasium.com/oliverguenther/openproject-revisions_git)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/oliverguenther/openproject-revisions_git?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/oliverguenther/openproject-revisions_git?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This plugin aims to provide extensive features for managing Git repositories within [OpenProject](http://www.openproject.org).
 Forked from [jbox-web's version](https://jbox-web.github.io/redmine_git_hosting/) of the long-lived and often-forked redmine-git_hosting plugin (formerly redmine-gitosis).
 
