@@ -26,6 +26,11 @@ module OpenProject::Revisions::Git
       end
 
 
+      def dump_settings
+        puts YAML.dump Redmine::Plugin.find('openproject_revisions_git').settings[:default]
+      end
+
+
       private
 
 
