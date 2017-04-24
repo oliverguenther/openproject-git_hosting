@@ -109,7 +109,7 @@ module OpenProject::Revisions::Git
     register(
       'openproject-revisions_git',
       author_url: 'https://github.com/oliverguenther/openproject_revisions_git',
-      requires_openproject: '>= 3.0.0',
+      requires_openproject: '>= 6.1.0',
       settings: settings
     ) do
       project_module :repository do
