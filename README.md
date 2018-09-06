@@ -1,7 +1,10 @@
 # OpenProject Revisions/Git Plugin
-[![Code Climate](https://codeclimate.com/github/oliverguenther/openproject-revisions_git/badges/gpa.svg)](https://codeclimate.com/github/oliverguenther/openproject-revisions_git)
-[![Dependency Status](https://gemnasium.com/oliverguenther/openproject-revisions_git.svg)](https://gemnasium.com/oliverguenther/openproject-revisions_git)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/oliverguenther/openproject-revisions_git?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+# Deprecated, please see opf/openproject-gitolite
+
+## This plugin is being maintained for current OpenProject versions over at http://github.com/opf/openproject-gitolite. Please use the version for OpenProject < 6
+
+
 
 This plugin aims to provide extensive features for managing Git repositories within [OpenProject](http://www.openproject.org).
 Forked from [jbox-web's version](https://jbox-web.github.io/redmine_git_hosting/) of the long-lived and often-forked redmine-git_hosting plugin (formerly redmine-gitosis).
