@@ -2,7 +2,7 @@
 
 # Deprecated, please see opf/openproject-gitolite
 
-## This plugin is being maintained for current OpenProject versions over at http://github.com/opf/openproject-gitolite. Please use the version for OpenProject < 6
+## This plugin is being maintained for current OpenProject versions over at http://github.com/opf/openproject-gitolite. Please use this version only for OpenProject < 6
 
 
 
